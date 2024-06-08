@@ -72,7 +72,7 @@ pipeline {
                     
                     # Commit and push the changes
                     git status
-                    git add Kubernetes/deployment.yml
+                    git add deployment.yml
                     git commit -m "Update deployment image to version ${BUILD_NUMBER}"
                     git push origin main
                     """

@@ -63,15 +63,6 @@ pipeline {
                 sh 'trivy image nagesh0205/youtube-clone:${BUILD_NUMBER} > trivyimage.txt'
             }
         }
-        stage('Docker Image Push') {
-            steps {
-                script {
-                    withDockerRegistry(credentialsId: 'dockerhub') {
-                        sh 'docker push nagesh0205/youtube-clone:${BUILD_NUMBER}'
-                    }
-                }
-            }
-        }
         stage('Update deployment file') {
             steps {
                 script {
@@ -80,10 +71,20 @@ pipeline {
                     sed -i 's/youtube-clone:[0-9]\\+/youtube-clone:$BUILD_NUMBER/g' deployment.yml
                     
                     # Commit and push the changes
+                    git status
                     git add Kubernetes/deployment.yml
                     git commit -m "Update deployment image to version ${BUILD_NUMBER}"
                     git push origin main
                     """
+                }
+            }
+        }
+        stage('Docker Image Push') {
+            steps {
+                script {
+                    withDockerRegistry(credentialsId: 'dockerhub') {
+                        sh 'docker push nagesh0205/youtube-clone:${BUILD_NUMBER}'
+                    }
                 }
             }
         }

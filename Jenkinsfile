@@ -78,6 +78,11 @@ pipeline {
                     sh """
                     cd Kubernetes
                     sed -i 's/youtube-clone:[0-9]\\+/youtube-clone:$BUILD_NUMBER/g' deployment.yml
+                    
+                    # Commit and push the changes
+                    git add .
+                    git commit -m "Update deployment image to version ${BUILD_NUMBER}"
+                    git push origin main
                     """
                 }
             }
